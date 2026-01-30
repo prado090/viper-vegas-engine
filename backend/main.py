@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from .logic import gerar_sinal
+from backend.logic import gerar_sinal
+
 
 app = FastAPI(title="Viper Vegas Engine")
 

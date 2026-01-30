@@ -1,5 +1,6 @@
-from .terminals import TERMINAIS, ROLETAC
-from .schemas import SignalResponse
+from backend.terminals import get_terminal
+from backend.schemas import SignalResponse
+
 
 # ============================
 # CONFIGURAÇÕES

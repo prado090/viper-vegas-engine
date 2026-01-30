@@ -1,5 +1,7 @@
+# backend/terminals.py
+
 TERMINAIS = {
-    0: [0, 10, 20, 30],
+    0: [0],
     1: [1, 11, 21, 31],
     2: [2, 12, 22, 32],
     3: [3, 13, 23, 33],
@@ -8,11 +10,11 @@ TERMINAIS = {
     6: [6, 16, 26, 36],
     7: [7, 17, 27],
     8: [8, 18, 28],
-    9: [9, 19, 29],
+    9: [9, 19, 29]
 }
 
-ROLETAC = [
-    0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27,
-    13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33,
-    1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26
-]
+def get_terminal(num: int):
+    for terminal, nums in TERMINAIS.items():
+        if num in nums:
+            return terminal
+    return None
