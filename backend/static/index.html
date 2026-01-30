@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Viper Vegas Engine</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0e0e0e;
+      color: #fff;
+      padding: 20px;
+    }
+
+    .card {
+      background: #1b1b1b;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 650px;
+      margin: auto;
+      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    }
+
+    input, select, button {
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      margin-top: 10px;
+    }
+
+    button {
+      background: #ffcc00;
+      cursor: pointer;
+    }
+
+    .status {
+      margin-top: 15px;
+      padding: 20px;
+      font-size: 26px;
+      text-align: center;
+      border-radius: 8px;
+    }
+
+    .ENTRADA { background: #0077ff; }
+    .ENTRADA_ESCADINHA { background: #7b00ff; }
+    .GALE { background: #ff9900; }
+    .GREEN { background: #00cc66; }
+    .RED { background: #cc0000; }
+    .IGNORE { background: #555; }
+    .AQUECENDO { background: #333; }
+    .BLOQUEADO { background: #222; }
+
+    .bar {
+      margin-top: 10px;
+      width: 100%;
+      height: 16px;
+      background: #333;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #cc0000, #ffcc00, #00cc66);
+      transition: width 0.3s;
+    }
+
+    .score-text {
+      margin-top: 6px;
+      font-size: 14px;
+      text-align: center;
+      opacity: 0.9;
+    }
+
+    .nums {
+      margin-top: 12px;
+      font-size: 15px;
+      opacity: 0.9;
+    }
+
+    .hist {
+      margin-top: 15px;
+      font-size: 13px;
+      opacity: 0.7;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>🐍 Viper Vegas Engine</h2>
+
+  <label>Modo de operação:</label>
+  <select id="modo">
+    <option value="conservador">Conservador</option>
+    <option value="normal" selected>Normal</option>
+    <option value="agressivo">Agressivo</option>
+  </select>
+
+  <input id="num" type="number" min="0" max="36" placeholder="Número da roleta">
+  <button onclick="enviar()">Enviar</button>
+
+  <div id="status" class="status AQUECENDO">Aguardando histórico</div>
+
+  <div class="bar">
+    <div id="scoreBar" class="bar-fill"></div>
+  </div>
+  <div id="scoreText" class="score-text">Score: --%</div>
+
+  <div id="info" class="nums"></div>
+  <div id="hist" class="hist"></div>
+</div>
+
+<script>
+async function enviar() {
+  const num = document.getElementById("num").value;
+  const modo = document.getElementById("modo").value;
+
+  const res = await fetch("/spin", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ num: Number(num), modo })
+  });
+
+  const data = await res.json();
+
+  const statusDiv = document.getElementById("status");
+  statusDiv.className = "status " + data.status;
+  statusDiv.innerText = data.status;
+
+  const score = data.forca ?? 0;
+  const bar = document.getElementById("scoreBar");
+  bar.style.width = score + "%";
+
+  if (score < 40) bar.style.background = "#cc0000";
+  else if (score < 70) bar.style.background = "#ffcc00";
+  else bar.style.background = "#00cc66";
+
+  document.getElementById("scoreText").innerText =
+    score > 0 ? `Score de confiança: ${score}%` : "Score indisponível (histórico insuficiente)";
+
+  document.getElementById("info").innerHTML = `
+    <b>Terminal:</b> ${data.terminal ?? "-"}<br>
+    <b>Gale:</b> ${data.gale ?? "-"}<br>
+    <b>Mensagem:</b> ${data.mensagem ?? ""}<br>
+    <b>Números:</b> ${(data.numeros || []).join(", ")}
+  `;
+
+  const histDiv = document.getElementById("hist");
+  histDiv.innerHTML += `➡️ ${num} → ${data.status} (${score}%) [${modo}]<br>`;
+}
+</script>
+
+</body>
+</html>
