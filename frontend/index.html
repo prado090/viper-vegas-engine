@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Viper Vegas Engine</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+  <h1>🎯 Viper Vegas Engine</h1>
+
+  <input id="numero" type="number" min="0" max="36" placeholder="Número (0-36)">
+  <select id="modo">
+    <option value="normal">Normal</option>
+    <option value="conservador">Conservador</option>
+    <option value="agressivo">Agressivo</option>
+  </select>
+
+  <button onclick="enviar()">ENVIAR SPIN</button>
+
+  <pre id="resultado">Aguardando...</pre>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
